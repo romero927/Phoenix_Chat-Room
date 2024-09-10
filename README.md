@@ -27,7 +27,7 @@ Before you begin, ensure you have the following installed:
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/chat_room.git
+   git clone https://github.com/romero927/Phoenix_Chat-Room
    cd chat_room
    ```
 
