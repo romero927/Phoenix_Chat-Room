@@ -1,0 +1,26 @@
+app = "phoenix-chat-room"
+primary_region = "ewr"
+kill_signal = "SIGTERM"
+kill_timeout = 5
+processes = []
+
+[build]
+  [build.args]
+    BUILD_REVISION = "1.0.0"
+
+[env]
+  PHX_HOST = "phoenix-chat-room.fly.dev"
+  PORT = "8080"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+  [http_service.concurrency]
+    type = "connections"
+    hard_limit = 1000
+    soft_limit = 1000

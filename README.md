@@ -22,86 +22,117 @@ Before you begin, ensure you have the following installed:
 - Elixir (version 1.14 or later)
 - Erlang (version 24 or later)
 - Phoenix Framework (version 1.7 or later)
+- Node.js (for asset compilation)
+- Docker (for building the deployment image)
+- Fly.io CLI (for deployment)
 
-## Installation
+## Local Development Setup
 
 1. Clone the repository:
    ```
-   git clone https://github.com/romero927/Phoenix_Chat-Room
+   git clone https://github.com/yourusername/chat_room.git
    cd chat_room
    ```
 
 2. Install dependencies:
    ```
    mix deps.get
+   cd assets && npm install && cd ..
    ```
 
-3. Install and setup the asset pipeline:
-   ```
-   mix assets.setup
-   ```
-
-## Running the Application
-
-To start the Phoenix server:
-
-1. Start the server:
+3. Start the Phoenix server:
    ```
    mix phx.server
    ```
 
-2. Visit [`localhost:4000`](http://localhost:4000) in your browser.
+4. Visit [`localhost:4000`](http://localhost:4000) in your browser.
 
-## Usage
+## Deployment to Fly.io
 
-1. When you first open the application, you'll be prompted to enter a username.
-2. After entering a username, you'll join the chat room.
-3. Type your message in the input field at the bottom of the page and press "Send" or hit Enter to send a message.
-4. All connected users will see your message in real-time.
-5. You can update your status (online, away, busy) using the dropdown in the sidebar.
-6. URLs in messages will be automatically converted to clickable links.
-7. You can delete your own messages by clicking the "Delete" button next to them.
-8. After 30 seconds of inactivity, your status will automatically change to "idle".
+This project is configured for deployment to Fly.io. Follow these steps to deploy:
+
+1. Install the [Fly CLI](https://fly.io/docs/hands-on/install-flyctl/)
+
+2. Login to Fly.io:
+   ```
+   fly auth login
+   ```
+
+3. Create a new Fly.io app:
+   ```
+   fly launch
+   ```
+   This will create a new app and generate a `fly.toml` file.
+
+4. Set the secret key base:
+   ```
+   fly secrets set SECRET_KEY_BASE=$(mix phx.gen.secret)
+   ```
+
+5. Deploy the application:
+   ```
+   fly deploy
+   ```
+
+6. Open your deployed application:
+   ```
+   fly open
+   ```
 
 ## Project Structure
 
 ```
 chat_room/
-├── assets/
-├── config/
+├── assets/              # Frontend assets (JS, CSS)
+├── config/              # Application configuration
 ├── lib/
-│   ├── chat_room/
-│   │   └── application.ex
-│   └── chat_room_web/
-│       ├── components/
-│       ├── live/
+│   ├── chat_room/       # Core application logic
+│   └── chat_room_web/   # Web-related modules (controllers, views, etc.)
+│       ├── live/        # LiveView modules
 │       │   └── chat_live.ex
-│       ├── router.ex
-│       ├── telemetry.ex
-│       └── endpoint.ex
-├── priv/
-│   └── static/
-├── test/
-└── mix.exs
+│       ├── components/  # Reusable UI components
+│       └── endpoint.ex  # Phoenix endpoint
+├── priv/                # Private application files
+├── test/                # Test files
+├── Dockerfile           # Docker configuration for production
+├── fly.toml             # Fly.io configuration
+├── mix.exs              # Project and dependency configuration
+└── README.md            # This file
 ```
 
-## Key Technologies
+## Key Files for Deployment
 
-- Phoenix Framework
-- Phoenix LiveView
-- Phoenix PubSub
-- Tailwind CSS
+- `Dockerfile`: Defines the container image for the application.
+- `fly.toml`: Configuration file for Fly.io deployment.
+- `config/runtime.exs`: Runtime configuration, including production settings.
+
+## Customization
+
+You can customize the chat room by modifying the following files:
+
+- `lib/chat_room_web/live/chat_live.ex`: Main LiveView module for the chat functionality.
+- `assets/css/app.css`: Styling for the chat interface.
+- `config/config.exs`: Application-wide configuration.
+
+## Troubleshooting
+
+If you encounter issues during deployment:
+
+1. Check the Fly.io logs:
+   ```
+   fly logs
+   ```
+
+2. Ensure all environment variables are set correctly:
+   ```
+   fly secrets list
+   ```
+
+3. Verify your `Dockerfile` and `fly.toml` are correctly configured.
 
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-
-## Future Improvements
-
-- Add support for emojis
-- Implement private messaging
-- Add chat rooms or channels
-- Enhance security features
 
 ## License
 

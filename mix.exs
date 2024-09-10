@@ -9,7 +9,8 @@ defmodule ChatRoom.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      releases: releases()  # Add this line
     ]
   end
 
@@ -75,6 +76,16 @@ defmodule ChatRoom.MixProject do
         "tailwind chat_room --minify",
         "esbuild chat_room --minify",
         "phx.digest"
+      ]
+    ]
+  end
+
+  defp releases do
+    [
+      chat_room: [
+        include_executables_for: [:unix],
+        applications: [runtime_tools: :permanent],
+        steps: [:assemble, :tar]
       ]
     ]
   end
