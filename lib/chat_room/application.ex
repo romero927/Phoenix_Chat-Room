@@ -7,7 +7,8 @@ defmodule ChatRoom.Application do
       ChatRoomWeb.Telemetry,
       {Phoenix.PubSub, name: ChatRoom.PubSub},
       ChatRoomWeb.Endpoint,
-      ChatRoom.MessageCleaner
+      ChatRoom.MessageCleaner,
+      {ChatRoom.UserTracker, []}
     ]
 
     opts = [strategy: :one_for_one, name: ChatRoom.Supervisor]
