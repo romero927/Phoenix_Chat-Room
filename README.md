@@ -2,6 +2,8 @@
 
 This is a real-time, anonymous chat room application built with Phoenix LiveView. It allows users to join the chat with a username and exchange messages in real-time without requiring any database or user accounts.
 
+Can be tested here: [https://kgromero-chat-room.fly.dev/](https://kgromero-chat-room.fly.dev/)
+
 ## Features
 
 - Anonymous chat: No user accounts or registration required
