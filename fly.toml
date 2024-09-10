@@ -1,4 +1,4 @@
-app = "phoenix-chat-room"
+app = "kgromero-chat-room"
 primary_region = "ewr"
 kill_signal = "SIGTERM"
 kill_timeout = 5
@@ -9,7 +9,7 @@ processes = []
     BUILD_REVISION = "1.0.0"
 
 [env]
-  PHX_HOST = "phoenix-chat-room.fly.dev"
+  PHX_HOST = "kgromero-chat-room.fly.dev"
   PORT = "8080"
 
 [http_service]

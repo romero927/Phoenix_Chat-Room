@@ -200,60 +200,28 @@ defmodule ChatRoomWeb.ChatLive do
         <h1 class="text-xl font-bold">Phoenix Chat Room</h1>
         <%= if @username do %>
           <div class="flex items-center">
-            <span class="mr-4">
-              Logged in as: <%= @username %>
-              (<%= @status %><%= if @status_message != "", do: ": #{@status_message}" %>)
-            </span>
+            <span class="mr-4 hidden md:inline">Logged in as: <%= @username %></span>
             <button phx-click="leave_chat" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-200">
-              Leave Chat
+              Leave
             </button>
           </div>
         <% end %>
       </header>
 
       <%= if @username do %>
-        <div class="flex flex-1 overflow-hidden">
-          <aside class="w-64 bg-white shadow-md flex flex-col">
-            <div class="p-4 bg-blue-500 text-white">
-              <h2 class="text-lg font-semibold">Online Users</h2>
-            </div>
-            <div class="flex-1 overflow-y-auto p-4">
-              <%= for {user, user_data} <- @users do %>
-                <div class="mb-2 flex items-center">
-                  <div class={"w-2 h-2 rounded-full mr-2 #{if user_data.status == "online", do: "bg-green-500", else: "bg-yellow-500"}"}></div>
-                  <span><%= user %></span>
-                  <%= if user_data.status_message != "" do %>
-                    <span class="ml-2 text-sm text-gray-500">- <%= user_data.status_message %></span>
-                  <% end %>
-                </div>
-              <% end %>
-            </div>
-            <div class="p-4 border-t">
-              <form phx-submit="update_status" class="flex flex-col">
-                <select name="status" class="mb-2 p-2 border rounded" value={@status}>
-                  <option value="online" selected={@status == "online"}>Online</option>
-                  <option value="away" selected={@status == "away"}>Away</option>
-                  <option value="busy" selected={@status == "busy"}>Busy</option>
-                </select>
-                <input type="text" name="status_message" placeholder="Status message" value={@status_message} class="mb-2 p-2 border rounded" />
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200">
-                  Update Status
-                </button>
-              </form>
-            </div>
-          </aside>
-          <main class="flex-1 flex flex-col">
-            <div class="flex-1 overflow-y-auto p-4" id="chat-messages" phx-update="append">
+        <div class="flex flex-col md:flex-row flex-1 overflow-hidden">
+          <main class="flex-1 flex flex-col order-1 md:order-2 min-h-0">
+            <div class="flex-1 overflow-y-auto p-4" id="chat-messages">
               <%= for message <- @messages do %>
                 <%= case message.type do %>
                   <% :notification -> %>
                     <div class="mb-4 text-center text-sm text-gray-500 italic" id={"notification-#{message.id}"}>
                       <%= message.content %>
-                      <span class="text-xs ml-2">(<%= format_timestamp(message.timestamp) %>)</span>
+                      <span class="text-xs">(<%= format_timestamp(message.timestamp) %>)</span>
                     </div>
                   <% :user_message -> %>
                     <div class={"mb-4 flex #{if message.username == @username, do: "justify-end"}"} id={"message-#{message.id}"}>
-                      <div class={"max-w-xs lg:max-w-md xl:max-w-lg #{if message.username == @username, do: "bg-blue-500 text-white", else: "bg-gray-200 text-gray-800"} rounded-lg p-3 shadow"}>
+                      <div class={"max-w-xs md:max-w-md lg:max-w-lg #{if message.username == @username, do: "bg-blue-500 text-white", else: "bg-gray-200 text-gray-800"} rounded-lg p-3 shadow"}>
                         <%= if message.deleted do %>
                           <p class="italic text-sm">
                             Message was deleted by <%= message.deleted_by || "unknown" %>
@@ -282,12 +250,41 @@ defmodule ChatRoomWeb.ChatLive do
               </form>
             </div>
           </main>
+          <aside class="w-full md:w-64 bg-white shadow-md flex flex-col order-2 md:order-1 md:max-h-[calc(100vh-64px)] md:overflow-y-auto">
+            <div class="p-4 bg-blue-500 text-white">
+              <h2 class="text-lg font-semibold">Online Users</h2>
+            </div>
+            <div class="flex-1 overflow-y-auto p-4">
+              <%= for {user, user_data} <- @users do %>
+                <div class="mb-2 flex items-center">
+                  <div class={"w-2 h-2 rounded-full mr-2 #{if user_data.status == "online", do: "bg-green-500", else: "bg-yellow-500"}"}></div>
+                  <span><%= user %></span>
+                  <%= if user_data.status_message != "" do %>
+                    <span class="ml-2 text-sm text-gray-500">- <%= user_data.status_message %></span>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+            <div class="p-4 border-t">
+              <form phx-submit="update_status" class="flex flex-col">
+                <select name="status" class="mb-2 p-2 border rounded" value={@status}>
+                  <option value="online" selected={@status == "online"}>Online</option>
+                  <option value="away" selected={@status == "away"}>Away</option>
+                  <option value="busy" selected={@status == "busy"}>Busy</option>
+                </select>
+                <input type="text" name="status_message" placeholder="Status message" value={@status_message} class="mb-2 p-2 border rounded" />
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200">
+                  Update Status
+                </button>
+              </form>
+            </div>
+          </aside>
         </div>
       <% else %>
-        <div class="flex-1 flex items-center justify-center">
-          <div class="w-full max-w-xs">
+        <div class="flex-1 flex items-center justify-center p-4">
+          <div class="w-full max-w-md">
             <form phx-submit="set_username" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Join the Chat</h2>
+              <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Join the Chat</h2>
               <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
                   Username
@@ -311,7 +308,6 @@ defmodule ChatRoomWeb.ChatLive do
         document.getElementById("chat-input").focus();
       });
 
-      // Scroll to bottom of chat messages
       const chatMessages = document.getElementById("chat-messages");
       if (chatMessages) {
         chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -321,7 +317,6 @@ defmodule ChatRoomWeb.ChatLive do
         observer.observe(chatMessages, { childList: true });
       }
 
-      // Reset idle timer on user activity
       ["mousemove", "keydown", "click", "scroll"].forEach(event => {
         document.addEventListener(event, () => {
           window.dispatchEvent(new CustomEvent("phx:user_active"));

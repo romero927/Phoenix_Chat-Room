@@ -42,3 +42,22 @@ liveSocket.connect()
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
 
+function setVh() {
+  let vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+setVh();
+window.addEventListener('resize', setVh);
+
+// Ensure the chat scrolls to the bottom when new messages are added
+function scrollChatToBottom() {
+  const chatMessages = document.getElementById('chat-messages');
+  if (chatMessages) {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+}
+
+// Call this function when the page loads and whenever new messages are added
+window.addEventListener('phx:update', scrollChatToBottom);
+document.addEventListener('DOMContentLoaded', scrollChatToBottom);
